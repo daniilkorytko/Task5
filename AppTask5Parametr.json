@@ -1,0 +1,42 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "nameWebSite1": {
+            "value": "Task5Application1"
+        },
+        "hostingPlanName1": {
+            "value": "USASPlan"
+        },
+        "location1": {
+            "value": "West Europe"
+        },
+        "nameWebSite2": {
+            "value": "Task5Application2"
+        },
+        "hostingPlanName2": {
+            "value": "EuropePlan"
+        },
+        "location2": {
+            "value": "West US"
+        },
+        "relativeName": {
+            "value": "Task5TrafficManager"
+        },
+        "trafficRoutingMethod": {
+            "value": "Performance"
+        },
+        "maxReturn": {
+            "value": 0
+        },
+        "sku": {
+            "value": "Free"
+        },
+        "skuCode": {
+            "value": "S1"
+        },
+        "workerSize": {
+            "value": "0"
+        }
+    }
+}
