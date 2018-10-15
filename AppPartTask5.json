@@ -13,7 +13,6 @@
         },
         "sku": {
             "type": "string",
-            "value": "Free"
         },
         "skuCode": {
             "type": "string"
