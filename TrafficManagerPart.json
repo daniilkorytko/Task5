@@ -40,10 +40,6 @@
             "type": "Microsoft.Network/trafficmanagerprofiles",
             "name": "[parameters('relativeName')]",
             "location": "global",
-            "dependsOn": [
-                "[concat('Microsoft.Web/sites/', parameters('nameWebSite1'))]",
-                "[concat('Microsoft.Web/sites/', parameters('nameWebSite2'))]"
-            ],
             "properties": {
                 "trafficRoutingMethod": "[parameters('trafficRoutingMethod')]",
                 "dnsConfig": {
