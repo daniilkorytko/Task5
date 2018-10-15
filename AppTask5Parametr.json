@@ -25,18 +25,6 @@
         },
         "trafficRoutingMethod": {
             "value": "Performance"
-        },
-        "maxReturn": {
-            "value": 0
-        },
-        "sku": {
-            "value": "Free"
-        },
-        "skuCode": {
-            "value": "S1"
-        },
-        "workerSize": {
-            "value": "0"
         }
     }
 }

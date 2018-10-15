@@ -35,135 +35,84 @@
                 "Subnet"
             ]
         },
-        "maxReturn": {
-            "type": "int"
-        },
         "sku": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "Free"
         },
         "skuCode": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "S1"
         },
         "workerSize": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "0"
         }
     },
-    "variables": {
-        "endpoint1_name": "[concat('endpoint1-', resourceGroup().name)]",
-        "endpoint2_name": "[concat('endpoint2-', resourceGroup().name)]"
-},
+
     "resources": [
         {
-            "apiVersion": "2016-09-01",
-            "name": "[parameters('hostingPlanName1')]",
-            "type": "Microsoft.Web/serverfarms",
-            "location": "[parameters('location1')]",
+            "apiVersion": "2017-05-10",
+            "name": "linkedTemplateWebAPP1",
+            "type": "Microsoft.Resources/deployments",
             "properties": {
-                "name": "[parameters('hostingPlanName1')]",
-                "workerSizeId": "[parameters('workerSize')]",
-                "numberOfWorkers": "1"
-            },
-            "sku": {
-                "Tier": "[parameters('sku')]",
-                "Name": "[parameters('skuCode')]"
+              "mode": "Incremental",
+              "templateLink": {
+                 "uri":"https://raw.githubusercontent.com/daniilkorytko/Task5/master/AppPartTask5.json",
+                 "contentVersion":"1.0.0.0"
+              },
+              "parameters": {
+                "nameWebSite":{"value": "[parameters('nameWebSite1')]"},
+                "hostingPlanName":{"value": "[parameters('hostingPlanName1')]"},
+                "location":{"value": "[parameters('location1')]"},
+                "sku":{"value": "[parameters('sku')]"},
+                "skuCode":{"value": "[parameters('skuCode')]"},
+                "workerSize":{"value": "[parameters('workerSize')]"}
+               }
             }
-        },
-        {
-            
-            "apiVersion": "2015-08-01",
-            "name": "[parameters('nameWebSite1')]",
-            "type": "Microsoft.Web/sites",
+         },
+         {
+            "apiVersion": "2017-05-10",
+            "name": "linkedTemplateWebAPP2",
+            "type": "Microsoft.Resources/deployments",
             "properties": {
-                "name": "[parameters('nameWebSite1')]",
-                "siteConfig": {
-                    "appSettings": []
-                },
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms/', parameters('hostingPlanName1'))]",
-                "alwaysOn": true
-            },
-            "location": "[parameters('location1')]",
-            "dependsOn": [
-                "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName1'))]"
-            ]
-        },
-        {
-            "apiVersion": "2016-09-01",
-            "name": "[parameters('hostingPlanName2')]",
-            "type": "Microsoft.Web/serverfarms",
-            "location": "[parameters('location2')]",
-            "properties": {
-                "name": "[parameters('hostingPlanName2')]",
-                "workerSizeId": "[parameters('workerSize')]",
-                "numberOfWorkers": "1"
-            },
-            "sku": {
-                "Tier": "[parameters('sku')]",
-                "Name": "[parameters('skuCode')]"
+              "mode": "Incremental",
+              "templateLink": {
+                 "uri":"https://raw.githubusercontent.com/daniilkorytko/Task5/master/AppPartTask5.json",
+                 "contentVersion":"1.0.0.0"
+              },
+              "parameters": {
+                "nameWebSite":{"value": "[parameters('nameWebSite2')]"},
+                "hostingPlanName":{"value": "[parameters('hostingPlanName2')]"},
+                "location":{"value": "[parameters('location2')]"},
+                "sku":{"value": "[parameters('sku')]"},
+                "skuCode":{"value": "[parameters('skuCode')]"},
+                "workerSize":{"value": "[parameters('workerSize')]"}
+               }
             }
-        },
-        {
-            
-            "apiVersion": "2015-08-01",
-            "name": "[parameters('nameWebSite2')]",
-            "type": "Microsoft.Web/sites",
-            "properties": {
-                "name": "[parameters('nameWebSite2')]",
-                "siteConfig": {
-                    "appSettings": []
-                },
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms/', parameters('hostingPlanName2'))]",
-                "alwaysOn": true
-            },
-            "location": "[parameters('location2')]",
+         },
+         {
+            "apiVersion": "2017-05-10",
+            "name": "linkedTemplateTrakMen",
+            "type": "Microsoft.Resources/deployments",
             "dependsOn": [
-                "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName2'))]"
-            ]
-        },
-        {
-            "apiVersion": "2018-04-01",
-            "type": "Microsoft.Network/trafficmanagerprofiles",
-            "name": "[parameters('relativeName')]",
-            "location": "global",
-            "dependsOn": [
-                "[concat('Microsoft.Web/sites/', parameters('nameWebSite1'))]",
-                "[concat('Microsoft.Web/sites/', parameters('nameWebSite2'))]"
+                "linkedTemplateWebAPP2",
+                "linkedTemplateWebAPP1"
             ],
             "properties": {
-                "trafficRoutingMethod": "[parameters('trafficRoutingMethod')]",
-                "dnsConfig": {
-                    "relativeName": "[parameters('relativeName')]",
-                    "ttl": 70
-                },
-                "monitorConfig": {
-                    "protocol": "http",
-                    "port": "80",
-                    "path": "/"
-                },
-                "endpoints": [
-                    {
-                        "name": "[variables('endpoint1_name')]",
-                        "type": "Microsoft.Network/trafficManagerProfiles/azureEndpoints",
-                        "properties": {
-                            "endpointStatus": "Enabled",
-                            "targetResourceId": "[resourceId('Microsoft.Web/sites/', parameters('nameWebSite1'))]",
-                            "weight": 1,
-                            "priority": 1,
-                            "endpointLocation": "[parameters('location1')]"
-                        }
-                    },
-                    {
-                        "name": "[variables('endpoint2_name')]",
-                        "type": "Microsoft.Network/trafficManagerProfiles/azureEndpoints",
-                        "properties": {
-                            "endpointStatus": "Enabled",
-                            "targetResourceId": "[resourceId('Microsoft.Web/sites/', parameters('nameWebSite2'))]",
-                            "weight": 1,
-                            "priority": 2,
-                            "endpointLocation": "[parameters('location2')]"
-                        }
-                    }
-                ]
+              "mode": "Incremental",
+              "templateLink": {
+                 "uri":"https://raw.githubusercontent.com/daniilkorytko/Task5/master/TrafficManagerPart.json",
+                 "contentVersion":"1.0.0.0"
+              },
+              "parameters": {
+                "nameWebSite1":{"value": "[parameters('nameWebSite1')]"},
+                "location1":{"value": "[parameters('location1')]"},
+                "nameWebSite2":{"value": "[parameters('nameWebSite2')]"},
+                "location2":{"value": "[parameters('location2')]"},
+                "relativeName":{"value": "[parameters('relativeName')]"},
+                "trafficRoutingMethod":{"value": "[parameters('trafficRoutingMethod')]"}
+               }
             }
-}
+         }
     ]
 }
