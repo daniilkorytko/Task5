@@ -1,0 +1,86 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "nameWebSite1": {
+            "type": "string"
+        },
+        "location1": {
+            "type": "string"
+        },
+        "nameWebSite2": {
+            "type": "string"
+        },
+        "location2": {
+            "type": "string"
+        },
+        "relativeName": {
+            "type": "string"
+        },
+        "trafficRoutingMethod": {
+            "type": "string",
+            "defaultValue": "Performance",
+            "allowedValues": [
+                "Performance",
+                "Weighted",
+                "Priority",
+                "Geographic",
+                "MultiValue",
+                "Subnet"
+            ]
+        }
+    },
+    "variables": {
+        "endpoint1_name": "[concat('endpoint1-', resourceGroup().name)]",
+        "endpoint2_name": "[concat('endpoint2-', resourceGroup().name)]"
+},
+    "resources": [
+        {
+            "apiVersion": "2018-04-01",
+            "type": "Microsoft.Network/trafficmanagerprofiles",
+            "name": "[parameters('relativeName')]",
+            "location": "global",
+            "dependsOn": [
+                "[concat('Microsoft.Web/sites/', parameters('nameWebSite1'))]",
+                "[concat('Microsoft.Web/sites/', parameters('nameWebSite2'))]"
+            ],
+            "properties": {
+                "trafficRoutingMethod": "[parameters('trafficRoutingMethod')]",
+                "dnsConfig": {
+                    "relativeName": "[parameters('relativeName')]",
+                    "ttl": 70
+                },
+                "monitorConfig": {
+                    "protocol": "http",
+                    "port": "80",
+                    "path": "/"
+                },
+                "endpoints": [
+                    {
+                        "name": "[variables('endpoint1_name')]",
+                        "type": "Microsoft.Network/trafficManagerProfiles/azureEndpoints",
+                        "properties": {
+                            "endpointStatus": "Enabled",
+                            "targetResourceId": "[resourceId('Microsoft.Web/sites/', parameters('nameWebSite1'))]",
+                            "weight": 1,
+                            "priority": 1,
+                            "endpointLocation": "[parameters('location1')]"
+                        }
+                    },
+                    {
+                        "name": "[variables('endpoint2_name')]",
+                        "type": "Microsoft.Network/trafficManagerProfiles/azureEndpoints",
+                        "properties": {
+                            "endpointStatus": "Enabled",
+                            "targetResourceId": "[resourceId('Microsoft.Web/sites/', parameters('nameWebSite2'))]",
+                            "weight": 1,
+                            "priority": 2,
+                            "endpointLocation": "[parameters('location2')]"
+                        }
+                    }
+                ]
+            }
+}
+        
+    ]
+}
