@@ -12,7 +12,7 @@
             "type": "string"
         },
         "sku": {
-            "type": "string",
+            "type": "string"
         },
         "skuCode": {
             "type": "string"
